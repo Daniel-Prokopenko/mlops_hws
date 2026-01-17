@@ -1,0 +1,111 @@
+==> ОС: ubuntu 24.04
+==> Лог: install.log
+==> Старт: Sat Jan 17 18:00:46 MSK 2026
+==> VENV: /home/prokop/mlops_venv
+Починаю встановлення/перевірки…
+
+==> Docker: перевірка
+✅ Docker OK: Docker version 28.4.0, build d8eb465
+✅ Compose: Docker Compose version v2.39.4-desktop.1
+
+==> Python: перевірка
+✅ Python OK: Python 3.12.3
+
+==> venv: створення/перевірка
+✅ Створено venv: /home/prokop/mlops_venv
+
+==> Python deps у venv: Django / torch / torchvision / pillow
+Requirement already satisfied: pip in /home/prokop/mlops_venv/lib/python3.12/site-packages (24.0)
+Collecting pip
+  Downloading pip-25.3-py3-none-any.whl.metadata (4.7 kB)
+Downloading pip-25.3-py3-none-any.whl (1.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 398.0 kB/s eta 0:00:00
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 24.0
+    Uninstalling pip-24.0:
+      Successfully uninstalled pip-24.0
+Successfully installed pip-25.3
+==> Встановлюю Django (venv)…
+Collecting Django
+  Downloading django-6.0.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting asgiref>=3.9.1 (from Django)
+  Downloading asgiref-3.11.0-py3-none-any.whl.metadata (9.3 kB)
+Collecting sqlparse>=0.5.0 (from Django)
+  Downloading sqlparse-0.5.5-py3-none-any.whl.metadata (4.7 kB)
+Downloading django-6.0.1-py3-none-any.whl (8.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 469.3 kB/s  0:00:17
+Downloading asgiref-3.11.0-py3-none-any.whl (24 kB)
+Downloading sqlparse-0.5.5-py3-none-any.whl (46 kB)
+Installing collected packages: sqlparse, asgiref, Django
+
+Successfully installed Django-6.0.1 asgiref-3.11.0 sqlparse-0.5.5
+✅ Django встановлено (venv)
+==> Встановлюю torch + torchvision (CPU) (venv)…
+Looking in indexes: https://download.pytorch.org/whl/cpu
+Collecting torch
+  Downloading https://download.pytorch.org/whl/cpu/torch-2.9.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (29 kB)
+Collecting torchvision
+  Downloading https://download.pytorch.org/whl/cpu/torchvision-0.24.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (5.9 kB)
+Collecting filelock (from torch)
+  Downloading filelock-3.20.0-py3-none-any.whl.metadata (2.1 kB)
+Collecting typing-extensions>=4.10.0 (from torch)
+  Downloading https://download.pytorch.org/whl/typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting setuptools (from torch)
+  Downloading https://download.pytorch.org/whl/setuptools-70.2.0-py3-none-any.whl.metadata (5.8 kB)
+Collecting sympy>=1.13.3 (from torch)
+  Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Collecting networkx>=2.5.1 (from torch)
+  Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)
+Collecting jinja2 (from torch)
+  Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting fsspec>=0.8.5 (from torch)
+  Downloading fsspec-2025.12.0-py3-none-any.whl.metadata (10 kB)
+Collecting numpy (from torchvision)
+  Downloading numpy-2.3.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+Collecting pillow!=8.3.*,>=5.3.0 (from torchvision)
+  Downloading pillow-12.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.8 kB)
+Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch)
+  Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Collecting MarkupSafe>=2.0 (from jinja2->torch)
+  Downloading https://download.pytorch.org/whl/MarkupSafe-2.1.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (28 kB)
+Downloading https://download.pytorch.org/whl/cpu/torch-2.9.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (184.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 184.4/184.4 MB 25.5 MB/s  0:00:07
+Downloading https://download.pytorch.org/whl/cpu/torchvision-0.24.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (1.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.9/1.9 MB 24.9 MB/s  0:00:00
+Downloading fsspec-2025.12.0-py3-none-any.whl (201 kB)
+Downloading networkx-3.6.1-py3-none-any.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 482.1 kB/s  0:00:04
+Downloading pillow-12.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.0/7.0 MB 243.4 kB/s  0:00:28
+Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.3/6.3 MB 365.8 kB/s  0:00:17
+Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 233.2 kB/s  0:00:02
+Downloading https://download.pytorch.org/whl/typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Downloading filelock-3.20.0-py3-none-any.whl (16 kB)
+Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading numpy-2.3.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.6/16.6 MB 295.1 kB/s  0:00:57
+Downloading https://download.pytorch.org/whl/setuptools-70.2.0-py3-none-any.whl (930 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 930.8/930.8 kB 7.6 MB/s  0:00:00
+Installing collected packages: mpmath, typing-extensions, sympy, setuptools, pillow, numpy, networkx, MarkupSafe, fsspec, filelock, jinja2, torch, torchvision
+
+Successfully installed MarkupSafe-2.1.5 filelock-3.20.0 fsspec-2025.12.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.6.1 numpy-2.3.5 pillow-12.0.0 setuptools-70.2.0 sympy-1.14.0 torch-2.9.1+cpu torchvision-0.24.1+cpu typing-extensions-4.15.0
+✅ torch/torchvision встановлено (venv)
+✅ pillow вже встановлено (venv)
+
+==> Версії:
+Docker:   Docker version 28.4.0, build d8eb465
+Compose:  Docker Compose version v2.39.4-desktop.1
+Python:   Python 3.12.3
+Venv Python: Python 3.12.3
+pip (venv):  pip 25.3 from /home/prokop/mlops_venv/lib/python3.12/site-packages/pip (python 3.12)
+Django (venv): 6.0.1
+torch (venv): 2.9.1+cpu
+torchvision (venv): 0.24.1+cpu
+pillow (venv): 12.0.0
+
+✅ Готово.
+ℹ️ Активувати venv: source /home/prokop/mlops_venv/bin/activate
+ℹ️ Якщо Docker у WSL не працює — увімкни WSL integration у Docker Desktop.
