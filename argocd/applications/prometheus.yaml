@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus
+    targetRevision: "25.27.0"
+    helm:
+      values: |
+        server:
+          service:
+            type: ClusterIP
+            servicePort: 80
+          
+          persistentVolume:
+            enabled: true
+            size: 2Gi
+          
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+        
+        # Налаштування для збору метрик з PushGateway
+        extraScrapeConfigs: |
+          - job_name: 'pushgateway'
+            static_configs:
+              - targets: ['pushgateway-prometheus-pushgateway.mlflow.svc.cluster.local:9091']
+            scrape_interval: 5s
+            honor_labels: true
+
+        # Вимкнути компоненти, які не потрібні для цього прикладу
+        alertmanager:
+          enabled: false
+        
+        kubeStateMetrics:
+          enabled: false
+        
+        nodeExporter:
+          enabled: false
+        
+        pushgateway:
+          enabled: false
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

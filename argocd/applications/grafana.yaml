@@ -1,0 +1,122 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: grafana
+    targetRevision: "7.0.17"
+    helm:
+      values: |
+        adminPassword: admin123
+        
+        service:
+          type: ClusterIP
+          port: 80
+        
+        persistence:
+          type: pvc
+          enabled: true
+          size: 1Gi
+        
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://prometheus-server.monitoring.svc.cluster.local
+              access: proxy
+              isDefault: true
+        
+        dashboardProviders:
+          dashboardproviders.yaml:
+            apiVersion: 1
+            providers:
+            - name: 'default'
+              orgId: 1
+              folder: ''
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/default
+        
+        dashboards:
+          default:
+            mlflow-dashboard:
+              json: |
+                {
+                  "dashboard": {
+                    "id": null,
+                    "title": "MLflow Experiments",
+                    "tags": ["mlflow", "ml"],
+                    "style": "dark",
+                    "timezone": "browser",
+                    "panels": [
+                      {
+                        "id": 1,
+                        "title": "MLflow Accuracy",
+                        "type": "stat",
+                        "targets": [
+                          {
+                            "expr": "mlflow_accuracy",
+                            "format": "table",
+                            "instant": true
+                          }
+                        ],
+                        "gridPos": {
+                          "h": 8,
+                          "w": 12,
+                          "x": 0,
+                          "y": 0
+                        }
+                      },
+                      {
+                        "id": 2,
+                        "title": "MLflow Loss",
+                        "type": "stat",
+                        "targets": [
+                          {
+                            "expr": "mlflow_loss",
+                            "format": "table",
+                            "instant": true
+                          }
+                        ],
+                        "gridPos": {
+                          "h": 8,
+                          "w": 12,
+                          "x": 12,
+                          "y": 0
+                        }
+                      }
+                    ],
+                    "time": {
+                      "from": "now-1h",
+                      "to": "now"
+                    },
+                    "refresh": "30s"
+                  }
+                }
+
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
