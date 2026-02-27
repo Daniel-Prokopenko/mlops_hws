@@ -1,0 +1,20 @@
+# ArgoCD Helm chart overrides for HW
+# Access via port-forward, keep services internal
+
+server:
+  service:
+    type: ClusterIP
+  # Extra args example (safe for local/port-forward usage)
+  extraArgs:
+    - --insecure
+
+configs:
+  # Basic RBAC on (default admin account still exists unless you disable it)
+  rbac:
+    create: true
+    policy.default: role:readonly
+  # Timeouts / reconciliation settings (example overrides)
+  cm:
+    timeout.reconciliation: 180s
+  params:
+    server.insecure: "true"
