@@ -1,0 +1,69 @@
+stages:
+  - retrain
+
+variables:
+  PROJECT_DIR: "aiops-quality-project"
+  IMAGE_NAME: "aiops-quality-api"
+  DOCKER_TLS_CERTDIR: "/certs"
+
+# retrain -> build image -> update helm values -> push commit
+retrain-model:
+  stage: retrain
+  image: docker:27
+  services:
+    - name: docker:27-dind
+      command: ["--tls=false"]
+  rules:
+    # запуск вручную всегда доступен
+    - when: manual
+    # или можно триггернуть переменной DRIFT_TRIGGERED=true (webhook/trigger pipeline)
+    - if: '$DRIFT_TRIGGERED == "true"'
+      when: on_success
+  before_script:
+    - apk add --no-cache python3 py3-pip git bash
+  script:
+    - set -euo pipefail
+    - cd "$PROJECT_DIR"
+
+    # 1) retrain (mock)
+    - python3 model/train.py
+
+    # 2) define tag
+    - export NEW_TAG="${CI_COMMIT_SHORT_SHA:-local}-$(date +%Y%m%d%H%M%S)"
+
+    # 3) docker build
+    - docker build -t "$IMAGE_NAME:$NEW_TAG" .
+
+    # 4) docker push (если есть GitLab registry)
+    - |
+      if [ -n "${CI_REGISTRY_IMAGE:-}" ]; then
+        echo "Pushing to GitLab Registry: $CI_REGISTRY_IMAGE/$IMAGE_NAME:$NEW_TAG"
+        echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+        docker tag "$IMAGE_NAME:$NEW_TAG" "$CI_REGISTRY_IMAGE/$IMAGE_NAME:$NEW_TAG"
+        docker push "$CI_REGISTRY_IMAGE/$IMAGE_NAME:$NEW_TAG"
+        export FINAL_REPO="$CI_REGISTRY_IMAGE/$IMAGE_NAME"
+      else
+        echo "CI_REGISTRY_IMAGE is empty -> skip push (local build only)"
+        export FINAL_REPO="$IMAGE_NAME"
+      fi
+
+    # 5) update Helm values (image repo+tag)
+    - |
+      sed -i "s|repository: .*|repository: ${FINAL_REPO}|g" helm/values.yaml
+      sed -i "s|tag: .*|tag: ${NEW_TAG}|g" helm/values.yaml
+
+    # 6) commit + push back to branch (нужен токен)
+    - cd ..
+    - git config user.email "${GIT_PUSH_EMAIL:-ci@example.com}"
+    - git config user.name "${GIT_PUSH_USER:-gitlab-ci}"
+    - git add "$PROJECT_DIR/helm/values.yaml"
+    - git commit -m "ci: update image tag to ${NEW_TAG}" || echo "No changes to commit"
+
+    - |
+      if [ -n "${GIT_PUSH_TOKEN:-}" ]; then
+        # пушим обратно в текущую ветку
+        git remote set-url origin "https://${GIT_PUSH_USER:-oauth2}:${GIT_PUSH_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+        git push origin "HEAD:${CI_COMMIT_REF_NAME}"
+      else
+        echo "GIT_PUSH_TOKEN is empty -> skip git push"
+      fi

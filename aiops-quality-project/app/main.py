@@ -18,6 +18,7 @@ log = logging.getLogger(APP_NAME)
 
 REQ_COUNT = Counter("http_requests_total", "Total HTTP requests", ["method", "path", "status"])
 REQ_LAT = Histogram("http_request_latency_seconds", "Request latency", ["path"])
+DRIFT_COUNT = Counter("drift_detected_total", "Total drift detections")
 
 app = FastAPI(title=APP_NAME)
 
@@ -81,5 +82,6 @@ def predict_endpoint(payload: PredictIn):
     is_drift = drift_detect(data, pred)
     if is_drift:
         log.warning("Drift detected")
+        DRIFT_COUNT.inc()
 
     return {"prediction": pred, "drift": is_drift}
