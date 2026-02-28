@@ -1,0 +1,14 @@
+image:
+  repository: aiops-quality-api
+  tag: local
+  pullPolicy: IfNotPresent
+
+service:
+  port: 8000
+
+env:
+  APP_NAME: aiops-quality-api
+  DRIFT_THRESHOLD: "0.9"
+  MODEL_PATH: /models/model.pkl
+
+resources: {}
