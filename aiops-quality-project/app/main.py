@@ -5,6 +5,7 @@ import logging
 from typing import Any, Dict, Optional
 
 from fastapi import FastAPI, Request
+from fastapi.responses import Response
 from pydantic import BaseModel
 from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 
@@ -68,7 +69,7 @@ def health():
 
 @app.get("/metrics")
 def metrics():
-    return generate_latest(), 200, {"Content-Type": CONTENT_TYPE_LATEST}
+    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 @app.post("/predict")
 def predict_endpoint(payload: PredictIn):
