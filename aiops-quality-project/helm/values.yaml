@@ -1,6 +1,6 @@
 image:
-  repository: aiops-quality-api
-  tag: local
+  repository: 369367720723.dkr.ecr.eu-central-1.amazonaws.com/aiops-quality-api
+  tag: v20260301125441
   pullPolicy: IfNotPresent
 
 service:
